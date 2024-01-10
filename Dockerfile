@@ -1,13 +1,13 @@
 FROM ubuntu:latest as BUILD
 
 RUN apt-get update
-RUN apt-get install openjdk-20-jdk -y
+RUN apt-get install openjdk-17-jdk -y
 COPY . .
 
 RUN apt-get install maven -y
 RUN mvn clean install
 
-FROM openjdk:20-jdk-slim
+FROM amazoncorretto:17
 
 EXPOSE 8080
 
