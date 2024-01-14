@@ -1,8 +1,10 @@
 package dev.adovgapp.advogapp.controllers;
 
 import dev.adovgapp.advogapp.domain.user.AuthenticationDTO;
+import dev.adovgapp.advogapp.domain.user.LoginResponseDTO;
 import dev.adovgapp.advogapp.domain.user.RegisterDTO;
 import dev.adovgapp.advogapp.domain.user.User;
+import dev.adovgapp.advogapp.infra.security.TokenService;
 import dev.adovgapp.advogapp.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +24,18 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(),data.password());
-        try {
-            var auth = this.authenticationManager.authenticate(usernamePassword);
-            System.out.println("Usuário autenticado com sucesso: " + auth.getName());
-        } catch (AuthenticationException e) {
-            System.out.println("Falha na autenticação: " + e.getMessage());
-            throw e;
-        }
-        return ResponseEntity.ok().build();
+        var auth = this.authenticationManager.authenticate(usernamePassword);
+
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
     @PostMapping("/register")
