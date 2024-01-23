@@ -45,11 +45,11 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
-        if(this.repository.findByLogin(data.login()) != null) {
-            throw new ApiRequestException("Usuário Já Cadastrado",HttpStatus.BAD_REQUEST);
+        if(this.repository.findByEmail(data.email()) != null) {
+            throw new ApiRequestException("Email já cadastrado!",HttpStatus.BAD_REQUEST);
         }
         String encrytpedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.login(), encrytpedPassword, data.role());
+        User newUser = new User(data.fullName(),data.email(), encrytpedPassword, data.role());
 
         this.repository.save(newUser);
         return ResponseEntity.ok().build();

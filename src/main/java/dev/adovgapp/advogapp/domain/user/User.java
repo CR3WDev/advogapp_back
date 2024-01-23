@@ -22,12 +22,14 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String login;
+    private String fullName;
+    private String email;
     private String password;
     private UserRole role;
 
-    public User(String login,String password,UserRole role) {
-        this.login = login;
+    public User(String fullName,String email,String password,UserRole role) {
+        this.fullName = fullName;
+        this.email = email;
         this.password = password;
         this.role = role;
     }
@@ -40,7 +42,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
