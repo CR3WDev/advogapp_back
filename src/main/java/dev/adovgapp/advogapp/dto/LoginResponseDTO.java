@@ -1,4 +1,4 @@
-package dev.adovgapp.advogapp.domain.user;
+package dev.adovgapp.advogapp.dto;
 
 public record LoginResponseDTO(String token) {
 }

@@ -1,10 +1,11 @@
 package dev.adovgapp.advogapp.controllers;
 
-import dev.adovgapp.advogapp.domain.exceptions.ApiRequestException;
-import dev.adovgapp.advogapp.domain.user.AuthenticationDTO;
-import dev.adovgapp.advogapp.domain.user.LoginResponseDTO;
-import dev.adovgapp.advogapp.domain.user.RegisterDTO;
-import dev.adovgapp.advogapp.domain.user.User;
+import dev.adovgapp.advogapp.exceptions.ApiRequestException;
+import dev.adovgapp.advogapp.dto.LoginRequestDTO;
+import dev.adovgapp.advogapp.dto.LoginResponseDTO;
+import dev.adovgapp.advogapp.dto.RegisterDTO;
+import dev.adovgapp.advogapp.models.User;
+import dev.adovgapp.advogapp.enums.UserRole;
 import dev.adovgapp.advogapp.infra.security.TokenService;
 import dev.adovgapp.advogapp.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(),data.password());
         try {
         var auth = this.authenticationManager.authenticate(usernamePassword);
@@ -49,7 +50,7 @@ public class AuthenticationController {
             throw new ApiRequestException("Email já cadastrado!",HttpStatus.BAD_REQUEST);
         }
         String encrytpedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.fullName(),data.email(), encrytpedPassword, data.role());
+        User newUser = new User(data.fullName(),data.email(), encrytpedPassword, UserRole.USER);
 
         this.repository.save(newUser);
         return ResponseEntity.ok().build();

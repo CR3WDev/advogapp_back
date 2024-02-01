@@ -1,4 +1,4 @@
-package dev.adovgapp.advogapp.domain.exceptions;
+package dev.adovgapp.advogapp.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

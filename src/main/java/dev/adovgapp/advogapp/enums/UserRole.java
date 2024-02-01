@@ -1,16 +1,16 @@
 package dev.adovgapp.advogapp.enums;
 
 public enum UserRole {
-    ADMIN("admin"),
-    USER("user");
+    USER("user"),
+    LAWYER("lawyer");
 
-    private String role;
+    private String name;
 
-    UserRole(String role) {
-        this.role = role;
+    UserRole(String name) {
+        this.name = name;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 }

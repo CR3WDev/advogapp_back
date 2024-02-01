@@ -1,6 +1,6 @@
 package dev.adovgapp.advogapp.repositories;
 
-import dev.adovgapp.advogapp.domain.user.User;
+import dev.adovgapp.advogapp.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 
