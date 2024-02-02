@@ -19,7 +19,7 @@ public class Lawyer {
     private String id;
     private String OAB;
     private String CPF;
-    private Specialization Specialization;
+    private Integer specialization;
 
     @OneToOne
     @JoinColumn(name = "user_id")

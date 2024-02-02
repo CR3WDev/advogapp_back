@@ -1,5 +1,6 @@
 package dev.adovgapp.advogapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.adovgapp.advogapp.models.Lawyer;
 import dev.adovgapp.advogapp.enums.UserRole;
 import jakarta.persistence.*;
@@ -24,6 +25,7 @@ public class User implements UserDetails {
     private String id;
     private String fullName;
     private String email;
+    @JsonIgnore
     private String password;
     private UserRole role;
 

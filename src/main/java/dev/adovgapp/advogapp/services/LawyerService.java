@@ -1,9 +1,11 @@
 package dev.adovgapp.advogapp.services;
 
 import dev.adovgapp.advogapp.dto.LawyerRequestDTO;
+import dev.adovgapp.advogapp.dto.LawyerResponseDTO;
 import dev.adovgapp.advogapp.enums.Specialization;
 import dev.adovgapp.advogapp.enums.UserRole;
 import dev.adovgapp.advogapp.exceptions.ApiRequestException;
+import dev.adovgapp.advogapp.exceptions.RestError;
 import dev.adovgapp.advogapp.models.Lawyer;
 import dev.adovgapp.advogapp.models.User;
 import dev.adovgapp.advogapp.repositories.LawyerRepository;
@@ -18,25 +20,41 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LawyerService {
+
     @Autowired
     LawyerRepository repository;
 
     @Autowired
     UserRepository userRepository;
 
+
+    public LawyerResponseDTO convertToDTO(Lawyer lawyer) {
+        return new LawyerResponseDTO(lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
+    }
+    public List<LawyerResponseDTO> convertToListDTO(Page<Lawyer> lawyerPage) {
+         List<LawyerResponseDTO> lawyerDTOList = lawyerPage.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());;
+        return lawyerDTOList;
+    }
+
     public Lawyer save(LawyerRequestDTO lawyerRequestDTO) {
-        Optional<Lawyer> lawyerFinded = repository.findByCPF(lawyerRequestDTO.cpf());
-        if(lawyerFinded.isPresent()) {
-            throw new ApiRequestException("Cpf já cadastrado!",HttpStatus.BAD_REQUEST);
-        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
+        Optional<Lawyer> lawyerFindedByOAB = repository.findByUniqueValues(user.getId(),lawyerRequestDTO.cpf(),lawyerRequestDTO.oab());
+
+        if(lawyerFindedByOAB.isPresent()) {
+            throw new ApiRequestException("Usuário já cadastrado",HttpStatus.BAD_REQUEST);
+        }
+
         Lawyer lawyer = new Lawyer();
+        lawyer.setOAB(lawyer.getOAB());
+        lawyer.setSpecialization(lawyerRequestDTO.specialization());
         lawyer.setCPF(lawyerRequestDTO.cpf());
-        lawyer.setSpecialization(Specialization.getByCode(lawyerRequestDTO.specialization()));
         lawyer.setUser(user);
         return repository.save(lawyer);
     }

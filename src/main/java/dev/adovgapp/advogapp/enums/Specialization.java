@@ -27,11 +27,11 @@ public enum Specialization {
     public String getType() {
         return type;
     }
-    public static Specialization getByCode(int code) {
+    public static String getByCode(int code) {
 
         for (Specialization specialization : Specialization.values()) {
             if (specialization.code == code) {
-                return specialization;
+                return specialization.type;
             }
         }
      throw new Error("Specialization not found: " + code);
