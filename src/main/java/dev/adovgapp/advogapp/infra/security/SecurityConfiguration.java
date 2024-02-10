@@ -30,9 +30,6 @@ public class SecurityConfiguration {
     @Autowired
     SecurityFilter securityFilter;
 
-    @Autowired
-    @Qualifier("customAuthenticationEntryPoint")
-    AuthenticationEntryPoint authEntryPoint;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -40,9 +37,9 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(basic -> basic.authenticationEntryPoint(authEntryPoint))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

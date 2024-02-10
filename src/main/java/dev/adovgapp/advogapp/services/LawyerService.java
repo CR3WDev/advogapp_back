@@ -1,6 +1,7 @@
 package dev.adovgapp.advogapp.services;
 
 import dev.adovgapp.advogapp.dto.LawyerRequestDTO;
+import dev.adovgapp.advogapp.dto.LawyerResponseByIdDTO;
 import dev.adovgapp.advogapp.dto.LawyerResponseDTO;
 import dev.adovgapp.advogapp.enums.Specialization;
 import dev.adovgapp.advogapp.enums.UserRole;
@@ -10,6 +11,7 @@ import dev.adovgapp.advogapp.models.Lawyer;
 import dev.adovgapp.advogapp.models.User;
 import dev.adovgapp.advogapp.repositories.LawyerRepository;
 import dev.adovgapp.advogapp.repositories.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,9 +33,21 @@ public class LawyerService {
     @Autowired
     UserRepository userRepository;
 
-
     public LawyerResponseDTO convertToDTO(Lawyer lawyer) {
         return new LawyerResponseDTO(lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
+    }
+    public LawyerResponseByIdDTO convertToByIdDTO(Lawyer lawyer) {
+        LawyerResponseByIdDTO lawyerResponseByIdDTO = new LawyerResponseByIdDTO();
+        lawyerResponseByIdDTO.setId(lawyer.getId());
+        lawyerResponseByIdDTO.setFullName(lawyer.getUser().getFullName());
+        lawyerResponseByIdDTO.setEmail(lawyer.getUser().getEmail());
+        lawyerResponseByIdDTO.setCpf(lawyer.getCPF());
+        lawyerResponseByIdDTO.setOAB(lawyer.getOAB());
+        lawyerResponseByIdDTO.setDescription(lawyer.getDescription());
+        lawyerResponseByIdDTO.setRating(lawyer.getRating());
+        lawyerResponseByIdDTO.setReviewsNumber(lawyer.getReviewsNumber());
+        lawyerResponseByIdDTO.setSpecialization(Specialization.getByCode(lawyer.getSpecialization()));
+        return lawyerResponseByIdDTO;
     }
     public List<LawyerResponseDTO> convertToListDTO(Page<Lawyer> lawyerPage) {
          List<LawyerResponseDTO> lawyerDTOList = lawyerPage.getContent().stream()
@@ -42,6 +56,11 @@ public class LawyerService {
         return lawyerDTOList;
     }
 
+    private void updateUserToLawyer(User user,Lawyer lawyer) {
+        user.setLawyer(lawyer);
+        user.setRole(UserRole.LAWYER);
+        userRepository.save(user);
+    }
     public Lawyer save(LawyerRequestDTO lawyerRequestDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
@@ -50,12 +69,12 @@ public class LawyerService {
         if(lawyerFindedByOAB.isPresent()) {
             throw new ApiRequestException("Usuário já cadastrado",HttpStatus.BAD_REQUEST);
         }
-
         Lawyer lawyer = new Lawyer();
-        lawyer.setOAB(lawyer.getOAB());
+        lawyer.setOAB(lawyerRequestDTO.oab());
         lawyer.setSpecialization(lawyerRequestDTO.specialization());
         lawyer.setCPF(lawyerRequestDTO.cpf());
         lawyer.setUser(user);
+        updateUserToLawyer(user,lawyer);
         return repository.save(lawyer);
     }
 
@@ -66,7 +85,9 @@ public class LawyerService {
     public Optional<Lawyer> findById(String id) {
         return repository.findById(id);
     }
-
+    public Optional<Lawyer> findByUserId(String id) {
+        return repository.findByUserId(id);
+    }
     public void deleteById(String id) {
         repository.deleteById(id);
     }

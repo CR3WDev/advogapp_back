@@ -20,6 +20,9 @@ public class Lawyer {
     private String OAB;
     private String CPF;
     private Integer specialization;
+    private Long rating;
+    private String description;
+    private Integer reviewsNumber;
 
     @OneToOne
     @JoinColumn(name = "user_id")

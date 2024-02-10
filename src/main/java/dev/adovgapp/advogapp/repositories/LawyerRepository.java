@@ -16,4 +16,7 @@ public interface LawyerRepository extends JpaRepository<Lawyer,String> {
 
     @Query("SELECT l FROM Lawyer l WHERE l.user.id = :userId OR l.CPF = :cpf OR l.OAB = :oab")
     Optional<Lawyer> findByUniqueValues(@Param("userId") String userId, @Param("cpf") String cpf,@Param("oab") String oab);
+
+    Optional<Lawyer> findByUserId(String id);
+
 }
