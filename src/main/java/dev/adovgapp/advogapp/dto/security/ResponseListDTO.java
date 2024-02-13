@@ -1,4 +1,4 @@
-package dev.adovgapp.advogapp.dto;
+package dev.adovgapp.advogapp.dto.security;
 
 import java.util.List;
 

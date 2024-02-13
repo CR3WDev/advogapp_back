@@ -1,4 +1,4 @@
-package dev.adovgapp.advogapp.dto;
+package dev.adovgapp.advogapp.dto.security;
 
 import dev.adovgapp.advogapp.enums.UserRole;
 

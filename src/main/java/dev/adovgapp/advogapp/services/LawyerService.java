@@ -1,17 +1,15 @@
 package dev.adovgapp.advogapp.services;
 
-import dev.adovgapp.advogapp.dto.LawyerRequestDTO;
-import dev.adovgapp.advogapp.dto.LawyerResponseByIdDTO;
-import dev.adovgapp.advogapp.dto.LawyerResponseDTO;
+import dev.adovgapp.advogapp.dto.lawyer.LawyerRequestDTO;
+import dev.adovgapp.advogapp.dto.lawyer.LawyerResponseByIdDTO;
+import dev.adovgapp.advogapp.dto.lawyer.LawyerResponseDTO;
 import dev.adovgapp.advogapp.enums.Specialization;
 import dev.adovgapp.advogapp.enums.UserRole;
 import dev.adovgapp.advogapp.exceptions.ApiRequestException;
-import dev.adovgapp.advogapp.exceptions.RestError;
 import dev.adovgapp.advogapp.models.Lawyer;
 import dev.adovgapp.advogapp.models.User;
 import dev.adovgapp.advogapp.repositories.LawyerRepository;
 import dev.adovgapp.advogapp.repositories.UserRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,6 +60,23 @@ public class LawyerService {
         userRepository.save(user);
     }
     public Lawyer save(LawyerRequestDTO lawyerRequestDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        Optional<Lawyer> lawyerFindedByOAB = repository.findByUniqueValues(user.getId(),lawyerRequestDTO.cpf(),lawyerRequestDTO.oab());
+
+        if(lawyerFindedByOAB.isPresent()) {
+            throw new ApiRequestException("Usuário já cadastrado",HttpStatus.BAD_REQUEST);
+        }
+        Lawyer lawyer = new Lawyer();
+        lawyer.setOAB(lawyerRequestDTO.oab());
+        lawyer.setSpecialization(lawyerRequestDTO.specialization());
+        lawyer.setCPF(lawyerRequestDTO.cpf());
+        lawyer.setUser(user);
+        updateUserToLawyer(user,lawyer);
+        return repository.save(lawyer);
+    }
+
+    public Lawyer updateLawyer(LawyerRequestDTO lawyerRequestDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         Optional<Lawyer> lawyerFindedByOAB = repository.findByUniqueValues(user.getId(),lawyerRequestDTO.cpf(),lawyerRequestDTO.oab());

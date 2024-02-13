@@ -1,6 +1,10 @@
 package dev.adovgapp.advogapp.controllers;
 
-import dev.adovgapp.advogapp.dto.*;
+import dev.adovgapp.advogapp.dto.lawyer.LawyerRequestDTO;
+import dev.adovgapp.advogapp.dto.lawyer.LawyerResponseByIdDTO;
+import dev.adovgapp.advogapp.dto.lawyer.LawyerResponseDTO;
+import dev.adovgapp.advogapp.dto.security.RequestListDTO;
+import dev.adovgapp.advogapp.dto.security.ResponseListDTO;
 import dev.adovgapp.advogapp.enums.Specialization;
 import dev.adovgapp.advogapp.exceptions.ApiRequestException;
 import dev.adovgapp.advogapp.models.Lawyer;
@@ -13,7 +17,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lawyer")

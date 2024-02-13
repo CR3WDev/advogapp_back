@@ -1,4 +1,4 @@
-package dev.adovgapp.advogapp.dto;
+package dev.adovgapp.advogapp.dto.lawyer;
 
 import lombok.Data;
 

@@ -1,9 +1,9 @@
 package dev.adovgapp.advogapp.controllers;
 
 import dev.adovgapp.advogapp.exceptions.ApiRequestException;
-import dev.adovgapp.advogapp.dto.LoginRequestDTO;
-import dev.adovgapp.advogapp.dto.LoginResponseDTO;
-import dev.adovgapp.advogapp.dto.RegisterDTO;
+import dev.adovgapp.advogapp.dto.security.LoginRequestDTO;
+import dev.adovgapp.advogapp.dto.security.LoginResponseDTO;
+import dev.adovgapp.advogapp.dto.security.RegisterDTO;
 import dev.adovgapp.advogapp.models.User;
 import dev.adovgapp.advogapp.enums.UserRole;
 import dev.adovgapp.advogapp.infra.security.TokenService;

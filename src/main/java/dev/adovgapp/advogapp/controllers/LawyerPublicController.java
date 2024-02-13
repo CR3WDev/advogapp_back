@@ -1,8 +1,7 @@
 package dev.adovgapp.advogapp.controllers;
 
-import dev.adovgapp.advogapp.dto.LawyerResponseDTO;
-import dev.adovgapp.advogapp.dto.RequestListDTO;
-import dev.adovgapp.advogapp.dto.ResponseListDTO;
+import dev.adovgapp.advogapp.dto.lawyer.LawyerResponseDTO;
+import dev.adovgapp.advogapp.dto.security.ResponseListDTO;
 import dev.adovgapp.advogapp.exceptions.ApiRequestException;
 import dev.adovgapp.advogapp.models.Lawyer;
 import dev.adovgapp.advogapp.services.LawyerService;
