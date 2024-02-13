@@ -34,7 +34,7 @@ public class LawyerService {
     UserRepository userRepository;
 
     public LawyerResponseDTO convertToDTO(Lawyer lawyer) {
-        return new LawyerResponseDTO(lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
+        return new LawyerResponseDTO(lawyer.getId(), lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
     }
     public LawyerResponseByIdDTO convertToByIdDTO(Lawyer lawyer) {
         LawyerResponseByIdDTO lawyerResponseByIdDTO = new LawyerResponseByIdDTO();

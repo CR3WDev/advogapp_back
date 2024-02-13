@@ -26,7 +26,7 @@ public class LawyerController {
     public ResponseEntity<LawyerResponseDTO> addLawyer(@RequestBody LawyerRequestDTO data) {
         try {
             var lawyer = service.save(data);
-            LawyerResponseDTO lawyerResponseDTO = new LawyerResponseDTO(lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
+            LawyerResponseDTO lawyerResponseDTO = new LawyerResponseDTO(lawyer.getId(),lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
         return ResponseEntity.ok().body(lawyerResponseDTO);
         } catch(AuthenticationException authenticationException){
             throw new ApiRequestException(authenticationException.getMessage(),HttpStatus.BAD_REQUEST);
