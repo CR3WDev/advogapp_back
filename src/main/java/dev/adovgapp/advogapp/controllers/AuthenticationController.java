@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("auth")
 public class AuthenticationController {
@@ -39,7 +41,11 @@ public class AuthenticationController {
             var auth = this.authenticationManager.authenticate(usernamePassword);
             User userAuth = (User) auth.getPrincipal();
             var token = tokenService.generateToken(userAuth);
-            return ResponseEntity.ok(new LoginResponseDTO(token,userAuth.getLawyer().getId(),userAuth.getId(),userAuth.getRole().getName()));
+            if(userAuth.getLawyer() == null) {
+                return ResponseEntity.ok(new LoginResponseDTO(token,Optional.empty(),userAuth.getId(),userAuth.getRole().getName()));
+            }else{
+                return ResponseEntity.ok(new LoginResponseDTO(token, Optional.of(userAuth.getLawyer().getId()),userAuth.getId(),userAuth.getRole().getName()));
+            }
         }catch(AuthenticationException authenticationException) {
             throw new ApiRequestException("Usuário ou senha inválido!",HttpStatus.BAD_REQUEST);
         }

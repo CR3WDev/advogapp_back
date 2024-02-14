@@ -1,4 +1,6 @@
 package dev.adovgapp.advogapp.dto.security;
 
-public record LoginResponseDTO(String token,String lawyerId,String userId,String role) {
+import java.util.Optional;
+
+public record LoginResponseDTO(String token, Optional<String> lawyerId, String userId, String role) {
 }
