@@ -43,6 +43,7 @@ public class LawyerService {
         lawyerResponseByIdDTO.setOAB(lawyer.getOAB());
         lawyerResponseByIdDTO.setDescription(lawyer.getDescription());
         lawyerResponseByIdDTO.setRating(lawyer.getRating());
+        lawyerResponseByIdDTO.setUserId(lawyer.getUser().getId());
         lawyerResponseByIdDTO.setReviewsNumber(lawyer.getReviewsNumber());
         lawyerResponseByIdDTO.setSpecialization(Specialization.getByCode(lawyer.getSpecialization()));
         return lawyerResponseByIdDTO;

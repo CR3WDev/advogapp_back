@@ -36,9 +36,10 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(),data.password());
         try {
-        var auth = this.authenticationManager.authenticate(usernamePassword);
-        var token = tokenService.generateToken((User) auth.getPrincipal());
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+            var auth = this.authenticationManager.authenticate(usernamePassword);
+            User userAuth = (User) auth.getPrincipal();
+            var token = tokenService.generateToken(userAuth);
+            return ResponseEntity.ok(new LoginResponseDTO(token,userAuth.getLawyer().getId(),userAuth.getId(),userAuth.getRole().getName()));
         }catch(AuthenticationException authenticationException) {
             throw new ApiRequestException("Usuário ou senha inválido!",HttpStatus.BAD_REQUEST);
         }
@@ -51,7 +52,6 @@ public class AuthenticationController {
         }
         String encrytpedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(data.fullName(),data.email(), encrytpedPassword, UserRole.USER);
-
         this.repository.save(newUser);
         return ResponseEntity.ok().build();
     }

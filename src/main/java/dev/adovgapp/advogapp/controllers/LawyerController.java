@@ -51,7 +51,7 @@ public class LawyerController {
     @GetMapping("/{id}")
     public ResponseEntity<LawyerResponseByIdDTO> getLawyerById(@RequestBody @PathVariable String id) {
         try {
-            var lawyer = service.findByUserId(id);
+            var lawyer = service.findById(id);
             if(lawyer.isEmpty()) {
                 throw new ApiRequestException("Advogado Não Cadastrado",HttpStatus.BAD_REQUEST);
             }

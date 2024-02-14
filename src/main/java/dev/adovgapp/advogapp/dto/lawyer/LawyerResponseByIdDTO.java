@@ -13,5 +13,6 @@ public class LawyerResponseByIdDTO {
     private Long rating;
     private Integer reviewsNumber;
     private String specialization;
+    private String userId;
 
 }
