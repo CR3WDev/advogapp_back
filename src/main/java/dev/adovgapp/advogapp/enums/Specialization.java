@@ -1,5 +1,11 @@
 package dev.adovgapp.advogapp.enums;
 
+import dev.adovgapp.advogapp.dto.EnumList;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public enum Specialization {
 
     CRIMINAL_LAW(0,"Direito Penal"),
@@ -27,6 +33,9 @@ public enum Specialization {
     public String getType() {
         return type;
     }
+    public Integer getCode() {
+        return code;
+    }
     public static String getByCode(int code) {
 
         for (Specialization specialization : Specialization.values()) {
@@ -35,5 +44,14 @@ public enum Specialization {
             }
         }
      throw new Error("Specialization not found: " + code);
+    }
+    public static List<EnumList> getList() {
+        List<EnumList> codesAndTypes = new ArrayList<>();
+
+        for (Specialization specialization : Specialization.values()) {
+            codesAndTypes.add(new EnumList(specialization.code,specialization.getType()));
+        }
+
+        return codesAndTypes;
     }
 }

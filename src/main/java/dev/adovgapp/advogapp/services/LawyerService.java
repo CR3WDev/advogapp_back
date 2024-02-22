@@ -32,7 +32,7 @@ public class LawyerService {
     UserRepository userRepository;
 
     public LawyerResponseDTO convertToDTO(Lawyer lawyer) {
-        return new LawyerResponseDTO(lawyer.getId(), lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
+        return new LawyerResponseDTO(lawyer.getId(), lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()), lawyer.getDescription());
     }
     public LawyerResponseByIdDTO convertToByIdDTO(Lawyer lawyer) {
         LawyerResponseByIdDTO lawyerResponseByIdDTO = new LawyerResponseByIdDTO();
@@ -80,18 +80,17 @@ public class LawyerService {
     public Lawyer updateLawyer(LawyerRequestDTO lawyerRequestDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        Optional<Lawyer> lawyerFindedByOAB = repository.findByUniqueValues(user.getId(),lawyerRequestDTO.cpf(),lawyerRequestDTO.oab());
+        Optional<Lawyer> lawyerFinded = repository.findByUniqueValues(user.getId(),lawyerRequestDTO.cpf(),lawyerRequestDTO.oab());
 
-        if(lawyerFindedByOAB.isPresent()) {
-            throw new ApiRequestException("Usuário já cadastrado",HttpStatus.BAD_REQUEST);
+        if(lawyerFinded.isEmpty()) {
+            throw new ApiRequestException("Usuário Não encontrado!",HttpStatus.BAD_REQUEST);
         }
-        Lawyer lawyer = new Lawyer();
-        lawyer.setOAB(lawyerRequestDTO.oab());
-        lawyer.setSpecialization(lawyerRequestDTO.specialization());
-        lawyer.setCPF(lawyerRequestDTO.cpf());
-        lawyer.setUser(user);
-        updateUserToLawyer(user,lawyer);
-        return repository.save(lawyer);
+        Lawyer updatedLawyer = lawyerFinded.get();
+        updatedLawyer.setDescription(lawyerRequestDTO.description());
+        updatedLawyer.getUser().setFullName(lawyerRequestDTO.fullName());
+        updatedLawyer.setSpecialization(lawyerRequestDTO.specialization());
+
+        return repository.save(updatedLawyer);
     }
 
     public List<Lawyer> finAll() {

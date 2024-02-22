@@ -1,5 +1,6 @@
 package dev.adovgapp.advogapp.controllers;
 
+import dev.adovgapp.advogapp.dto.EnumList;
 import dev.adovgapp.advogapp.dto.lawyer.LawyerRequestDTO;
 import dev.adovgapp.advogapp.dto.lawyer.LawyerResponseByIdDTO;
 import dev.adovgapp.advogapp.dto.lawyer.LawyerResponseDTO;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -29,7 +31,7 @@ public class LawyerController {
     public ResponseEntity<LawyerResponseDTO> addLawyer(@RequestBody LawyerRequestDTO data) {
         try {
             var lawyer = service.save(data);
-            LawyerResponseDTO lawyerResponseDTO = new LawyerResponseDTO(lawyer.getId(),lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()));
+            LawyerResponseDTO lawyerResponseDTO = new LawyerResponseDTO(lawyer.getId(),lawyer.getUser().getFullName(), Specialization.getByCode(lawyer.getSpecialization()),lawyer.getDescription());
         return ResponseEntity.ok().body(lawyerResponseDTO);
         } catch(AuthenticationException authenticationException){
             throw new ApiRequestException(authenticationException.getMessage(),HttpStatus.BAD_REQUEST);
@@ -61,4 +63,25 @@ public class LawyerController {
             throw new ApiRequestException(authenticationException.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editLawyerById(@RequestBody LawyerRequestDTO lawyerRequestDTO) {
+        try {
+            service.updateLawyer(lawyerRequestDTO);
+            return ResponseEntity.ok().body("ok");
+        } catch(AuthenticationException authenticationException){
+            throw new ApiRequestException(authenticationException.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/specializations")
+    public ResponseEntity<ResponseListDTO> getSpecializations() {
+        try {
+            List<EnumList> specializations = Specialization.getList();
+
+            ResponseListDTO responseListDTO = new ResponseListDTO(specializations, (long) specializations.size());
+            return ResponseEntity.ok().body(responseListDTO);
+        } catch(AuthenticationException authenticationException){
+            throw new ApiRequestException(authenticationException.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
